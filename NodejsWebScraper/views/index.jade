@@ -1,0 +1,13 @@
+﻿extends layout
+
+block content
+  .jumbotron
+    h1 Duschskrapan
+    p.lead En labb för att hitta en tid för att äta lite gott och se pilsnerfilm!
+    p
+    form.form-inline(method='post' action="/scrape")
+        div.form-group
+            label(for='urlToScrape') Ange url:
+            input.form-control(type='text' name='urlToScrape' id='urlToScrape' value='http://localhost:8080/')
+            button.btn.btn-default(type='submit' placeholder='test' value='Start!') Start!
+  block test
