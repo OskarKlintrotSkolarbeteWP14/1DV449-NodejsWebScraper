@@ -28,11 +28,23 @@ export class Scraper {
                 this.scrapeAllBodys(callback);
             },
             (callback) => {
+                let bodys: Cheerio[] = new Array();
                 this.allPages.forEach((value: Page.Page) => {
-                    console.log(value.getLink());
+                    if (value.getLink().indexOf(this.pagesToScrape[0]) >= 0) {
+                        bodys.push(value.getBody());
+                        //console.log(value.getLink());
+                        //console.log(value.getBody().toString());
+                    }
                 });
+                console.log("All: " + this.getDatesFromCalendar(bodys)); // Gets an array; [friday, saturday, sunday]
                 callback();
-            }
+            },
+            (callback) => {
+                //this.allPages.forEach((value: Page.Page) => {
+                //    console.log(value.getLink());
+                //});
+                callback();
+            },
         ], (err, result) => {
             callback();
         });
@@ -118,12 +130,11 @@ export class Scraper {
     }
 
     private fixLastSlashOnUrl(url: string): string {
-        if (url.slice(-1) == "/")
+        if (url.slice(-1) == "/" || url.slice(-1) == "l")
             return url;
         else
             return url + "/";
     }
-
 
     private scrapeAllBodys(callback): void {
         let pages: Page.Page[] = new Array<Page.Page>();
@@ -139,6 +150,7 @@ export class Scraper {
                         callback();
                     },
                     (err) => {
+                        console.log(err);
                         callback();
                     },
                 ]);
@@ -148,19 +160,33 @@ export class Scraper {
             });
     }
 
-    private scrapeBody(urlToScrape, callback): void {
+    private scrapeBody(urlToScrape: string, callback): void {
         urlToScrape = this.fixLastSlashOnUrl(urlToScrape);
 
         request(urlToScrape, (error, response, html) => {
             console.log("request sent");
             if (!error) {
                 let $ = cheerio.load(html);
-
-                this.tempForScrapeBody = $('body');
+                this.tempForScrapeBody = $('html');
             } else {
                 console.log(error);
             }
             callback();
         });
+    }
+
+    private getDatesFromCalendar(bodys: Cheerio[]): boolean[] {
+        let ret: boolean[] = [true, true, true];
+
+        bodys.forEach((item: Cheerio, index: number) => {
+            let $ = cheerio.load(item.toString());
+            let tempBool: boolean[] = new Array();
+
+            $('tbody').children('tr').children('td').each((index: number, element: CheerioElement) => {
+                if ($(element).text().toLowerCase() != "ok")
+                    ret[index] = false;
+            });
+        });
+        return ret;
     }
 }
