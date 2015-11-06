@@ -1,11 +1,14 @@
 ﻿import express = require('express');
 import Scraper = require('../models/Scraper');
+import async = require('async');
+
+var consoleLog: any;
 
 /*
  * GET home page.
  */
 export function index(req: express.Request, res: express.Response) {
-    res.render('index', { title: 'Duschskrapan', year: new Date().getFullYear() });
+    res.render('index', { title: 'Duschskrapan', year: new Date().getFullYear(), message: JSON.stringify(consoleLog) });
 };
 
 export function about(req: express.Request, res: express.Response) {
@@ -17,7 +20,14 @@ export function about(req: express.Request, res: express.Response) {
  * POST home page.
  */
 export function scrape(req: express.Request, res: express.Response) {
-    var scraper = new Scraper.Scraper(req.body.urlToScrape);
-    scraper.test();
-    index(req, res);
+    var scraper: Scraper.Scraper;
+    async.series([
+        (callback) => {
+            scraper = new Scraper.Scraper(req.body.urlToScrape, callback);
+        }
+    ], (err, result) => {
+        console.log("New Scraper instantiated");
+        consoleLog = scraper.log();
+        index(req, res);
+    });
 };
