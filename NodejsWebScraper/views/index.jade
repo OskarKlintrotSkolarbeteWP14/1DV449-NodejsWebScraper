@@ -11,5 +11,16 @@ block content
             input.form-control(type='text' name='urlToScrape' id='urlToScrape' value='http://localhost:8080/')
             button.btn.btn-default(type='submit' placeholder='test' value='Start!') Start!
     
-  p #{message}
-  block test
+  p 
+    ul
+    - var days = ["fredag", "lördag", "söndag"]
+        if message
+            each item in message
+                li Ni kan se 
+                   = item.getMovie()
+                   |  på 
+                   = days[item.getDay()]
+                   |  klockan
+                   = item.getTime()
+        else
+            p Skriv in en adress och tryck på "Start!" för att skrapa sidorna.

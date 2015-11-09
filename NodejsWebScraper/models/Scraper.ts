@@ -16,14 +16,14 @@ export class Scraper {
     private allPages: Array<Page.Page> = new Array<Page.Page>(); // A page consits of a link and a body
 
     /*
-     *  Three variables used for storing temperate data. If using `return` `callback()` won't be called
+     *  Four variables used for storing temperate data. If using `return` `callback()` won't be called
      *  and if using `callback()` we block `return`. Hence the reason for not using pure functions.
      */
     private tempForScrapeLinks: string[] = new Array();
     private tempForScrapeBody: Cheerio;
     private tempForCinema: JSON;
+    private tempDaysForCinema: boolean[] = new Array();
 
-    private possibleDaysForCinema: boolean[] = new Array();
     private possibleEvenings: Evening.Evening[] = new Array();
 
     constructor(url: string, callback) {
@@ -40,7 +40,7 @@ export class Scraper {
          
     }
 
-    log(): any {
+    getPossibleEveningsAndMovies(): any {
         return this.possibleEvenings;
     }
 
@@ -59,13 +59,13 @@ export class Scraper {
                         bodys.push(value.getBody());
                     }
                 });
-                this.possibleDaysForCinema = this.getDatesFromCalendar(bodys);
+                this.tempDaysForCinema = this.getDatesFromCalendar(bodys);
                 callback();
             },
             (callback) => {
                 let cinema: Cheerio = this.getBody(this.allPages, this.pagesToScrape[1]);
                 if (cinema != undefined)
-                    this.getMoviesFromCinema(this.possibleDaysForCinema, cinema, callback);
+                    this.getMoviesFromCinema(this.tempDaysForCinema, cinema, callback);
                 else
                     callback();
             },
@@ -143,7 +143,6 @@ export class Scraper {
                 $('a').each((index, element) => {
                     let a: any = $(element);
                     a = url.resolve(urlToScrape, a.attr("href"));
-                    //console.log(a);
                     hrefs.push(a);
                 });
             } else {
