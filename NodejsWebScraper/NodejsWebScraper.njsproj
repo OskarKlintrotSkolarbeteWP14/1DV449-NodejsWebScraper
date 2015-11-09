@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
+    <TypeScriptCompile Include="models\Evening.ts" />
     <TypeScriptCompile Include="models\Page.ts" />
     <TypeScriptCompile Include="models\Scraper.ts" />
     <TypeScriptCompile Include="routes\index.ts" />

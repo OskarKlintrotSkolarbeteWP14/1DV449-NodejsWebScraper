@@ -4,9 +4,11 @@ import cheerio = require('cheerio');
 import url = require('url');
 import async = require('async');
 import Page = require('../models/Page');
+import Evening = require('../models/Evening');
 
 export class Scraper {
     private pagesToScrape: string[] = ["calendar", "cinema", "dinner"];
+    private daysOfTheWeel: string[] = ["fredag", "lördag", "söndag"];
 
     private url: string;
     private allLinks: string[] = new Array();
@@ -17,9 +19,28 @@ export class Scraper {
     private tempForScrapeLinks: string[] = new Array();
     private tempForScrapeBody: Cheerio;
 
+    private _possibleDaysForCinema: boolean[] = new Array();
+
     constructor(url: string, callback) {
         this.url = this.fixLastSlashOnUrl(url);
-        // Async pattern for reference
+        async.series([
+            (callback) => {
+                this.init(callback);
+            }
+        ], (err, result) => {
+            if (err)
+                console.log(err);
+            callback();
+        });
+         
+    }
+
+    log(): any {
+        return this.tempForScrapeLinks;
+        return this.allBodys;
+    }
+
+    private init(callback): void {
         async.series([
             (callback) => {
                 this.scrapeAllLinks(callback);
@@ -32,12 +53,22 @@ export class Scraper {
                 this.allPages.forEach((value: Page.Page) => {
                     if (value.getLink().indexOf(this.pagesToScrape[0]) >= 0) {
                         bodys.push(value.getBody());
-                        //console.log(value.getLink());
-                        //console.log(value.getBody().toString());
                     }
                 });
-                console.log("All: " + this.getDatesFromCalendar(bodys)); // Gets an array; [friday, saturday, sunday]
+                this._possibleDaysForCinema = this.getDatesFromCalendar(bodys);
+                console.log("All: " + this.possibleDaysForCinema()); // Gets an array; [friday, saturday, sunday]
                 callback();
+            },
+            (callback) => {
+                let cinema: Cheerio;
+                this.allPages.forEach((value: Page.Page, index: number, array: Page.Page[]) => {
+                    if (value.getLink().indexOf(this.pagesToScrape[1]) > -1)
+                        cinema = value.getBody();
+                });
+                if (cinema != undefined)
+                    this.getMoviesFromCinema(this.possibleDaysForCinema(), cinema, callback);
+                else
+                    callback();
             },
             (callback) => {
                 //this.allPages.forEach((value: Page.Page) => {
@@ -48,20 +79,10 @@ export class Scraper {
         ], (err, result) => {
             callback();
         });
-        /* // Async pattern for reference
-         * async.series([
-         *     (callback) => {
-         *     }
-         * ], (err, result) => { 
-         * 
-         * });
-         */
-
-        
     }
-    log(): any {
-        return this.tempForScrapeLinks;
-        return this.allBodys;
+
+    private possibleDaysForCinema(): boolean[] {
+        return this._possibleDaysForCinema;
     }
 
     private scrapeAllLinks(callback): void{
@@ -74,7 +95,7 @@ export class Scraper {
             // Scrapes links one level down
             (callback) => {
                 if (this.tempForScrapeLinks)
-                    // async.each since we need to use this.scrapeLinks() again
+                    // async.each since we need to use this.scrapeLinks() again UPDATE: .sync is parallell
                     async.each(this.tempForScrapeLinks,
                         (item: string, callback) => {
                                 async.series([
@@ -139,7 +160,7 @@ export class Scraper {
     private scrapeAllBodys(callback): void {
         let pages: Page.Page[] = new Array<Page.Page>();
 
-        async.each(this.tempForScrapeLinks,
+        async.each(this.tempForScrapeLinks, // UPDATE: .each is parallell
             (item: string, callback) => {
                 async.series([
                     (callback) => {
@@ -150,7 +171,6 @@ export class Scraper {
                         callback();
                     },
                     (err) => {
-                        console.log(err);
                         callback();
                     },
                 ]);
@@ -188,5 +208,74 @@ export class Scraper {
             });
         });
         return ret;
+    }
+
+    private getMoviesFromCinema(possibleDays: boolean[], cinema: Cheerio, callback): void {
+        let $ = cheerio.load(cinema.toString());
+        let movies: string[] = new Array();
+        let days: string[] = new Array();
+        let avalibleMovies: string[][];
+        let tempJson: any[] = new Array();
+        let moviesJson: JSON;
+
+        let getOptions = (tag: string): string[] => {
+            let ret: string[] = new Array();
+            $(tag).children('option').each((index: number, element: CheerioElement) => {
+                if ($(element).val())
+                    ret.push($(element).text());
+            });
+            return ret;
+        };
+
+        let getURL = (day: string, movie: string): string => this.url + "cinema/check?day=" + day + "&movie=" + movie;
+
+        let getJSON = (url: string, callback) => {
+            let temp: JSON;
+            let cast: any[] = new Array();
+            let ret: JSON;
+            request(url, (error, response, html) => {
+                console.log("request sent");
+                if (!error) {
+                    cast = JSON.parse(html).filter(t => t.status);
+                    tempJson.push(JSON.stringify(cast));
+                } else {
+                    console.log(error);
+                }
+                callback();
+            });
+        };
+
+        movies = getOptions('select#movie');
+        days = getOptions('select#day');
+
+        async.forEachOf(possibleDays,
+            ((item: boolean, index: number, callback) => {
+                if (item) {
+                    let day: string = ("0" + (index + 1)).slice(-2);
+                    async.forEachOf(movies,
+                        ((item: string, index: number, callback) => {
+                            let movie: string = ("0" + (index + 1)).slice(-2);
+                            let url = getURL(day, movie);
+                            getJSON(url, callback); 
+                        }),
+                        (err) => {
+                            let cast: string[] = new Array();
+                            console.log(tempJson);
+                            tempJson.forEach((item: string, index: number, array: string[]) => { // TODO: Refactoring
+                                for (let i = 0; i < JSON.parse(item).length; i++)
+                                    cast.push(JSON.parse(item)[i]);
+                            });
+                            moviesJson = JSON.parse(JSON.stringify(cast)); // TS ugly hack
+                            console.log(moviesJson);
+                            callback()
+                        });
+                    //console.log(day);
+                    //callback()
+                } else
+                    callback()
+            }),
+            (err) => {
+                callback()
+            });
     }
 }

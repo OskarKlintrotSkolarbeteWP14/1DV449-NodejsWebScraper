@@ -2,6 +2,7 @@
 
 declare module "async" {
     export function each(values: any[], iterator: (item: any, callback: Function) => void, callback: (err: Error) => void): void;
+    export function forEachOf(values: any[], iterator: (item: any, key: number, callback: Function) => void, callback: (err: Error) => void): void;
     export function map(values: any[], generator: (err: Error, result: any) => void, callback: (err: Error, results: any[]) => void): void;
     export function mapSeries(values: any[], generator: (err: Error, result: any) => void, callback: (err: Error, results: any[]) => void): void;
     export function mapLimit(values: any[], limit: number, generator: (err: Error, result: any) => void, callback: (err: Error, results: any[]) => void): void;
