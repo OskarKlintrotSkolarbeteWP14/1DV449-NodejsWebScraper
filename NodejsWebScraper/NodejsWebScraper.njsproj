@@ -5,6 +5,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>NodejsWebScraper</Name>
     <RootNamespace>NodejsWebScraper</RootNamespace>
+    <NameOfLastUsedPublishProfile>Duschskrapan - Web Deploy</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -48,6 +49,8 @@
     <TypeScriptCompile Include="Scripts\typings\stylus\stylus.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Duschskrapan - Web Deploy.pubxml" />
+    <None Include="Duschskrapan - FTP.pubxml" />
     <Content Include="public\javascripts\bootstrap.js" />
     <Content Include="public\javascripts\bootstrap.min.js" />
     <Content Include="public\javascripts\jquery-1.10.2.intellisense.js" />

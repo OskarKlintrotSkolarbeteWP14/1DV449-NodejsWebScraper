@@ -290,7 +290,8 @@ export class Scraper {
         });
 
         days.forEach((item: any) => {
-            movies.filter(m => m.day == item.day && (+m.time.slice(0, 2) + 2) <= +item.time).forEach((value: Movie) => {
+            // Really ugly fulhack in order to build it and publish to Azure
+            JSON.parse(JSON.stringify(movies)).filter(m => m.day == item.day && (+m.time.slice(0, 2) + 2) <= +item.time).forEach((value: Movie) => {
                 this.possibleEvenings.push(new Evening.Evening(value.time, +value.day, value.movie));
             });
         });
