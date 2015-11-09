@@ -8,20 +8,23 @@ import Evening = require('../models/Evening');
 
 export class Scraper {
     private pagesToScrape: string[] = ["calendar", "cinema", "dinner"];
-    private daysOfTheWeel: string[] = ["fredag", "lördag", "söndag"];
 
     private url: string;
     private allLinks: string[] = new Array();
     private allBodys: Cheerio[] = new Array();
 
-    private allPages: Array<Page.Page> = new Array<Page.Page>();
+    private allPages: Array<Page.Page> = new Array<Page.Page>(); // A page consits of a link and a body
 
+    /*
+     *  Three variables used for storing temperate data. If using `return` `callback()` won't be called
+     *  and if using `callback()` we block `return`. Hence the reason for not using pure functions.
+     */
     private tempForScrapeLinks: string[] = new Array();
     private tempForScrapeBody: Cheerio;
+    private tempForCinema: JSON;
 
-    private _possibleDaysForCinema: boolean[] = new Array();
-
-    private moviesJson: JSON;
+    private possibleDaysForCinema: boolean[] = new Array();
+    private possibleEvenings: Evening.Evening[] = new Array();
 
     constructor(url: string, callback) {
         this.url = this.fixLastSlashOnUrl(url);
@@ -38,9 +41,7 @@ export class Scraper {
     }
 
     log(): any {
-        return this.moviesJson;
-        return this.tempForScrapeLinks;
-        return this.allBodys;
+        return this.possibleEvenings;
     }
 
     private init(callback): void {
@@ -58,28 +59,22 @@ export class Scraper {
                         bodys.push(value.getBody());
                     }
                 });
-                this._possibleDaysForCinema = this.getDatesFromCalendar(bodys);
-                //console.log("All: " + this.possibleDaysForCinema()); // Gets an array; [friday, saturday, sunday]
+                this.possibleDaysForCinema = this.getDatesFromCalendar(bodys);
                 callback();
             },
             (callback) => {
                 let cinema: Cheerio = this.getBody(this.allPages, this.pagesToScrape[1]);
                 if (cinema != undefined)
-                    this.getMoviesFromCinema(this.possibleDaysForCinema(), cinema, callback);
+                    this.getMoviesFromCinema(this.possibleDaysForCinema, cinema, callback);
                 else
                     callback();
             },
             (callback) => {
                 let dinner: Cheerio = this.getBody(this.allPages, this.pagesToScrape[2]);
                 if (dinner != undefined)
-                    this.getMatchMoviesAndDinner(this.moviesJson, dinner, callback);
+                    this.getMatchMoviesAndDinner(this.tempForCinema, dinner, callback);
                 else
                     callback();
-                //console.log(this.moviesJson);
-                //this.allPages.forEach((value: Page.Page) => {
-                //    console.log(value.getLink());
-                //});
-                callback();
             },
         ], (err, result) => {
             callback();
@@ -93,10 +88,6 @@ export class Scraper {
                 ret = value.getBody();
         });
         return ret;
-    }
-
-    private possibleDaysForCinema(): boolean[] {
-        return this._possibleDaysForCinema;
     }
 
     private scrapeAllLinks(callback): void{
@@ -242,14 +233,15 @@ export class Scraper {
 
         let getURL = (day: string, movie: string): string => this.url + "cinema/check?day=" + day + "&movie=" + movie;
 
-        let getJSON = (url: string, callback) => {
+        let getJSON = (url: string, day: number, callback) => {
             request(url, (error, response, html) => {
                 console.log("request sent");
                 if (!error) {
                     JSON.parse(html).filter(m => m.status).forEach((item: Movie) => {
                         tempMovieObject.push({
                             "time": item.time,
-                            "movie": item.movie
+                            "day": day - 1,
+                            "movie": movies[+item.movie - 1]
                         });
                     });
                 } else {
@@ -270,10 +262,10 @@ export class Scraper {
                         ((item: string, index: number, callback) => {
                             let movie: string = ("0" + (index + 1)).slice(-2);
                             let url = getURL(day, movie);
-                            getJSON(url, callback); 
+                            getJSON(url, +day, callback); 
                         }),
                         (err) => {
-                            this.moviesJson = JSON.parse(JSON.stringify(tempMovieObject)); // TS ugly hack
+                            this.tempForCinema = JSON.parse(JSON.stringify(tempMovieObject)); // TS ugly hack
                             callback()
                         });
                 } else
@@ -285,6 +277,25 @@ export class Scraper {
     }
 
     private getMatchMoviesAndDinner(movies: JSON, dinner: Cheerio, callback): void {
+        let $ = cheerio.load(dinner.toString());
+        let htmlElements: string[] = ['.WordSection2', '.WordSection4', '.WordSection6'];
+        let days: any[] = new Array();
 
+        htmlElements.forEach((item: string, index: number, array: string[]) => {
+            $(item).children('p').children('input').siblings('span').each((key: number, element: CheerioElement) => {
+                days.push({
+                    "day": index,
+                    "time": $(element).text().slice(0, 2)
+                    });
+            });
+        });
+
+        days.forEach((item: any) => {
+            movies.filter(m => m.day == item.day && (+m.time.slice(0, 2) + 2) <= +item.time).forEach((value: Movie) => {
+                this.possibleEvenings.push(new Evening.Evening(value.time, +value.day, value.movie));
+            });
+        });
+
+        callback();
     }
 }
