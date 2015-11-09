@@ -41,6 +41,7 @@
     <TypeScriptCompile Include="Scripts\typings\async\async.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\cheerio\cheerio.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\express\express.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\movie\movie.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\request\form-data.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\request\request.d.ts" />
@@ -96,6 +97,7 @@
     <Folder Include="Scripts\typings\express\" />
     <Folder Include="Scripts\typings\cheerio\" />
     <Folder Include="Scripts\typings\async\" />
+    <Folder Include="Scripts\typings\movie\" />
     <Folder Include="Scripts\typings\request\" />
     <Folder Include="Scripts\typings\node\" />
     <Folder Include="Scripts\typings\stylus\" />
