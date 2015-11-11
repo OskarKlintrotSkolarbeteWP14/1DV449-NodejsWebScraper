@@ -1,5 +1,5 @@
 # 1DV449_oklib08
-## Laboration 1, duschskrapan
+## Laboration 1, (duschskrapan)[http://duschskrapan.azurewebsites.net/]
 ### Finns det några etiska aspekter vid webbskrapning. Kan du hitta något rättsfall?
 Att skrapa en sida är egentligen ingen större teknisk skillnad mot om en människa läser sidan. Däremot kan det bli problematiskt beroende på vad skrapan sedan använder informationen till. Vissa skrapar är till för att samla mailadresser att spamma eller hitta kommentarsfält att spamma. Det finns också robotar som skrapar sidor och sedan sätter ihop informationen till egna sidor för att locka klick till reklam. Där är främsta problem att upphovsrätten inte respekteras. 
 ### Finns det några riktlinjer för utvecklare att tänka på om man vill vara "en god skrapare" mot serverägarna?
