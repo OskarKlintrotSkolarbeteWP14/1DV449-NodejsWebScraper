@@ -7,6 +7,7 @@ import Page = require('../models/Page');
 import Evening = require('../models/Evening');
 
 export class Scraper {
+    private header = { 'email': 'oskar.klintrot@gmail.com' };
     private pagesToScrape: string[] = ["calendar", "cinema", "dinner"];
 
     private url: string;
@@ -135,7 +136,7 @@ export class Scraper {
         urlToScrape = this.fixLastSlashOnUrl(urlToScrape);
         let hrefs: string[] = new Array();
 
-        request(urlToScrape, (error, response, html) => {
+        request({ uri: urlToScrape, headers: this.header }, (error, response, html) => {
             console.log("request sent");
             if (!error) {
                 let $ = cheerio.load(html);
@@ -187,7 +188,7 @@ export class Scraper {
     private scrapeBody(urlToScrape: string, callback): void {
         urlToScrape = this.fixLastSlashOnUrl(urlToScrape);
 
-        request(urlToScrape, (error, response, html) => {
+        request({ uri: urlToScrape, headers: this.header }, (error, response, html) => {
             console.log("request sent");
             if (!error) {
                 let $ = cheerio.load(html);
@@ -233,7 +234,7 @@ export class Scraper {
         let getURL = (day: string, movie: string): string => this.url + "cinema/check?day=" + day + "&movie=" + movie;
 
         let getJSON = (url: string, day: number, callback) => {
-            request(url, (error, response, html) => {
+            request({ uri: url, headers: this.header }, (error, response, html) => {
                 console.log("request sent");
                 if (!error) {
                     JSON.parse(html).filter(m => m.status).forEach((item: Movie) => {
