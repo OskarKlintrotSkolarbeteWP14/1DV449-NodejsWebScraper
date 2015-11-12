@@ -12,15 +12,15 @@ block content
             button.btn.btn-default(type='submit' placeholder='test' value='Start!') Start!
     
   p 
-    ul
     - var days = ["fredag", "lördag", "söndag"]
         if message
-            each item in message
-                li Ni kan se 
-                   = item.getMovie()
-                   |  på 
-                   = days[item.getDay()]
-                   |  klockan
-                   = item.getTime()
+            div
+                each item in message
+                    p Ni kan se 
+                       strong= item.getMovie()
+                       |  på 
+                       strong= days[item.getDay()]
+                       |  klockan
+                       strong= item.getTime()
         else
             p Skriv in en adress och tryck på "Start!" för att skrapa sidorna.
