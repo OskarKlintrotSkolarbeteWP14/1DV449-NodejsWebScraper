@@ -9,6 +9,7 @@ import Evening = require('../models/Evening');
 export class Scraper {
     private header = { 'email': 'oskar.klintrot@gmail.com' };
     private pagesToScrape: string[] = ["calendar", "cinema", "dinner"];
+    private minimunTimeBetweenCinemaAndDinnerInMinutes: number = 120; 
 
     private url: string;
     private allLinks: string[] = new Array();
@@ -38,7 +39,7 @@ export class Scraper {
                 console.log(err);
             callback();
         });
-         
+
     }
 
     getPossibleEveningsAndMovies(): any {
@@ -212,6 +213,7 @@ export class Scraper {
                     ret[index] = false;
             });
         });
+
         return ret;
     }
 
@@ -262,16 +264,16 @@ export class Scraper {
                         ((item: string, index: number, callback) => {
                             let movie: string = ("0" + (index + 1)).slice(-2);
                             let url = getURL(day, movie);
-                            getJSON(url, +day, callback); 
+                            getJSON(url, +day, callback);
                         }),
                         (err) => {
-                            this.tempForCinema = JSON.parse(JSON.stringify(tempMovieObject)); // TS ugly hack
                             callback()
                         });
                 } else
                     callback()
             }),
             (err) => {
+                this.tempForCinema = JSON.parse(JSON.stringify(tempMovieObject)); // TS ugly hack
                 callback()
             });
     }
@@ -290,13 +292,23 @@ export class Scraper {
             });
         });
 
-        days.forEach((item: any) => {
-            // Really ugly fulhack in order to build it and publish to Azure
-            JSON.parse(JSON.stringify(movies)).filter(m => m.day == item.day && (+m.time.slice(0, 2) + 2) <= +item.time).forEach((value: Movie) => {
-                this.possibleEvenings.push(new Evening.Evening(value.time, +value.day, value.movie));
-            });
-        });
+        let tempMovies: Movie[] = JSON.parse(JSON.stringify(movies)); // Really ugly fulhack in order to build it and publish to Azure
+        tempMovies.forEach((movie: Movie) => {
+            let check: boolean = false;
+            days.forEach((dinner: any, index: number) => {
+                let movieTime: number = +movie.time.slice(0, 2) * 60 + this.minimunTimeBetweenCinemaAndDinnerInMinutes; // Minutes from 00:00
+                let dinnerTime: number = +dinner.time * 60; // Minutes from 00:00
 
+                if (movie.day == dinner.day
+                    && movieTime <= dinnerTime) {
+                    check = true;
+                }
+            });
+
+            if (check)
+                this.possibleEvenings.push(new Evening.Evening(movie.time, +movie.day, movie.movie));
+        });
+        console.log(this.possibleEvenings);
         callback();
     }
 }

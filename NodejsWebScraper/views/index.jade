@@ -8,7 +8,7 @@ block content
     form.form-inline(method='post' action="/scrape")
         div.form-group
             label(for='urlToScrape') Ange url:
-            input.form-control(type='text' name='urlToScrape' id='urlToScrape' value='http://localhost:8080/')
+            input.form-control(type='text' name='urlToScrape' id='urlToScrape' value='http://46.101.232.43/')
             button.btn.btn-default(type='submit' placeholder='test' value='Start!') Start!
     
   p 
@@ -21,6 +21,6 @@ block content
                        |  på 
                        strong= days[item.getDay()]
                        |  klockan
-                       strong= item.getTime()
+                       strong=  item.getTime()
         else
             p Skriv in en adress och tryck på "Start!" för att skrapa sidorna.
