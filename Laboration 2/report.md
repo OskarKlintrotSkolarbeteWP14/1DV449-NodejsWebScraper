@@ -2,7 +2,7 @@
 by Oskar Klintrot, oklib08
 
 ## Table of Content
-[Security Issus](#security-issus)
+### [Security Issus](#security-issus)
 - [Injection](#injection)
   - [Background](#background)
   - [Technical Description](#technical-description)
@@ -27,7 +27,7 @@ by Oskar Klintrot, oklib08
 - [Using Components with Known Vulnerabilities](#using-components-with-known-vulnerabilities)
   - [Background](#background-7)
 
-[Performance Issues](#performance-issues)
+### [Performance Issues](#performance-issues)
   - [404 Not Found](#404-not-found)
   - [Content Delivery Network (CDN)](#content-delivery-network-cdn)
   - [Caching](#caching)
@@ -36,9 +36,9 @@ by Oskar Klintrot, oklib08
   - [Do Not Put JS or CSS Inline](#do-not-put-js-or-css-inline)
   - [Build And Minify JS](#build-and-minify-js)
 
-[Miscellaneous](#miscellaneous)
+### [Miscellaneous](#miscellaneous)
 
-[References](#references)
+### [References](#references)
 
 ________________
 
