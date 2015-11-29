@@ -24,7 +24,7 @@ The idea of XSS is to put your code onto someone else's web site, either to get 
 
 #### Technical Description
 
-Inserting the code below in a message is an interesting form of stored XSS [3] since at least Chrome (but not Edge) actually in some cases will prefill the saved username and password for the site into the form, even if the form is hidden! If you then open up the devtools you will see the stored username, password and cookies in the console. In Edge you will only see the cookies but with the session cookie you can still attack the user. Keep reading down below for that! Preventing XSS is done by proparly escaping/sanatizing all inputs from the user [1, s.9] and all output to the user [6].
+Inserting the code below in a message is an interesting form of stored XSS [3] since at least Chrome (but not Edge) actually in some cases will prefill the saved username and password for the site into the form, even if the form is hidden! If you then open up the devtools you will see the stored username, password and cookies in the console. In Edge you will only see the cookies but with the session cookie you can still attack the user. Keep reading down below for that! Preventing XSS is done by properly escaping/sanatizing all inputs from the user [1, s.9] and all output to the user [6].
 ```
 <form hidden method="POST" action="XSS">
     <input type="text" id="username" name="username">
@@ -90,6 +90,10 @@ The database key to each messages is written in the html of the client. The func
 #### Background
 
 The app is built on Node.js which is a very minimalistig platform that relies heavily on the developer in order to create a secure web application [6].
+
+## Performance Issues
+
+
 
 ## Miscellaneous
 
