@@ -6,24 +6,26 @@ by Oskar Klintrot, oklib08
 - [Injection](#injection)
   - [Background](#background)
   - [Technical Description](#technical-description)
-- [Cross-site Scripting (XSS)](#cross-site-scripting-xss)
+- [Broken Authentication And Session Management](#broken-authentication-and-session-management)
   - [Background](#background-1)
   - [Technical Description](#technical-description-1)
-- [Broken Authentication And Session Management](#broken-authentication-and-session-management)
+- [Cross-site Scripting (XSS)](#cross-site-scripting-xss)
   - [Background](#background-2)
   - [Technical Description](#technical-description-2)
-- [Cross-Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
+- [Insecure Direct Object References](#insecure-direct-object-references)
   - [Background](#background-3)
   - [Technical Description](#technical-description-3)
-- [Missing Function Level Access Control](#missing-function-level-access-control)
+- [Sensitive Data Exposure](#sensitive-data-exposure)
   - [Background](#background-4)
   - [Technical Description](#technical-description-4)
-- [Insecure Direct Object References](#insecure-direct-object-references)
+- [Missing Function Level Access Control](#missing-function-level-access-control)
   - [Background](#background-5)
   - [Technical Description](#technical-description-5)
-- [Using Components with Known Vulnerabilities](#using-components-with-known-vulnerabilities)
+- [Cross-Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - [Background](#background-6)
   - [Technical Description](#technical-description-6)
+- [Using Components with Known Vulnerabilities](#using-components-with-known-vulnerabilities)
+  - [Background](#background-7)
 
 [Performance Issues](#performance-issues)
 
@@ -45,6 +47,18 @@ Code injection have been the number one most critical security flaw since 2010 [
 
 It is possible to login with `foo' OR '1'='1`.  after removing the `required` attribute from the email input-tag, or typing in an email address. For some reason though you get logged in as "user2" no matter what email you use, or not use. Probably because "user2" is first in the database. The hack works because `foo' OR '1'='1` is inserted directly into the sql-statment `SELECT * FROM user WHERE email = '" + username +"' AND password = '" + password +"'` as `password`. `'foo' OR '1'='1'` will always return true, since 1 == 1, and you can therefore login without using correct credentials.
 
+### Broken Authentication And Session Management
+
+#### Background
+
+Broken authentication and session management is the second most critical security flaw after code injection [1]. This includes both that the attacker can use the session id to pretend being someone else or that the passwords themself is not properly hashed in the database so if the attacker get access to the database he can use other users username and password [1, s.8].
+
+#### Technical Description
+
+If the attacker gets hold on the session id he can just go to the site, replace the content in his session cookie with the stolen session id. He can then just go to `/message` and start typing as the other user. Even after the user has logged out the attacker can still use the login since the application is not resetting the session. It's not even login the user out proparly so if you log out you can, on the same computer, go to `/message` and then you're logged in as the previous user. Also, in the database the passwords are stored unhashed.
+
+OWASP recommends using an already existing secure session management from a framework ie in combination with a sequre transport layer as HTTPS [5] and also hashing and salting the passwords [1, s.8].
+
 ### Cross-site Scripting (XSS)
 
 #### Background
@@ -65,17 +79,35 @@ Inserting the code below in a message is an interesting form of stored XSS [3] s
 </form>
 ```
 
-### Broken Authentication And Session Management
+### Insecure Direct Object References
 
 #### Background
 
-Broken authentication and session management is the second most critical security flaw after code injection [1]. This includes both that the attacker can use the session id to pretend being someone else or that the passwords themself is not properly hashed in the database so if the attacker get access to the database he can use other users username and password [1, s.8].
+If the application has references to, for example, key in the database then the attacker could use this information to manipulate specific data in the database if the user has access to those features or if the application dosen't check if the user is suppossed to have access to these features [1, s.10]. The application could, on the server, map the pk to other keys that is sent to the server in order to avoid exposing the pk to the client [1, s.10]. The application should also always authenticate the user before executing anything [1, s.10].
 
 #### Technical Description
 
-If the attacker gets hold on the session id he can just go to the site, replace the content in his session cookie with the stolen session id. He can then just go to `/message` and start typing as the other user. Even after the user has logged out the attacker can still use the login since the application is not resetting the session. It's not even login the user out proparly so if you log out you can, on the same computer, go to `/message` and then you're logged in as the previous user. Also, in the database the passwords are stored unhashed.
+The database key to each messages is written in the html of the client. The function for sending a remove request to the server is also sent to the client in a js-file. Examining the code you find out that you can actually type `MessageBoard.removeMessage(messageID)` (where `messageID` is the id of the message you want to remove) into the console of the devtools to remove a message, even if your not logged in as admin. The id is also exposed at `http://localhost:3000/message/data` wich you find when you examining the code, again in `MessageBoard.js`.
 
-OWASP recommends using an already existing secure session management from a framework ie in combination with a sequre transport layer as HTTPS [5] and also hashing and salting the passwords [1, s.8].
+### Sensitive Data Exposure
+
+#### Background
+
+Data sent over unencrypted HTTP is really easy to sniff and therefore steel for example an session cookie or even credentials that way [1, s.12].
+
+#### Technical Description
+
+The application is using HTTP but should use HTTPS in order to prevent an attacker listening to the traffic between the client and the server [1, s.12].
+
+### Missing Function Level Access Control
+
+#### Background
+
+If the server is incorrect setup the attacker can access files on the server that the attacker shouldn't get access to [1, s.13]. It could be either a web page (for example a normal user that can get access to admin pages just by changing the url) or accessing files stored on the sever [1, s13].
+
+#### Technical Description
+
+The attacker can just simply go to `/static/message.db` and then access the whole database. Note however that this is the only attack I had to actually read the server side code the make. All others where possible through either using common attacks (like XSS and code injection) or reading the data sent to the client (like in the following example about insecure direct object references).
 
 ### Cross-Site Request Forgery (CSRF)
 
@@ -96,26 +128,6 @@ The application is not using any CSRF tokens and it is therefore easy to write a
   </form>
 </body>
 ```
-
-### Missing Function Level Access Control
-
-#### Background
-
-If the server is incorrect setup the attacker can access files on the server that the attacker shouldn't get access to [1, s.13]. It could be either a web page (for example a normal user that can get access to admin pages just by changing the url) or accessing files stored on the sever [1, s13].
-
-#### Technical Description
-
-The attacker can just simply go to `/static/message.db` and then access the whole database. Note however that this is the only attack I had to actually read the server side code the make. All others where possible through either using common attacks (like XSS and code injection) or reading the data sent to the client (like in the following example about insecure direct object references).
-
-### Insecure Direct Object References
-
-#### Background
-
-If the application has references to, for example, key in the database then the attacker could use this information to manipulate specific data in the database if the user has access to those features or if the application dosen't check if the user is suppossed to have access to these features [1, s.10]. The application could, on the server, map the pk to other keys that is sent to the server in order to avoid exposing the pk to the client [1, s.10]. The application should also always authenticate the user before executing anything [1, s.10].
-
-#### Technical Description
-
-The database key to each messages is written in the html of the client. The function for sending a remove request to the server is also sent to the client in a js-file. Examining the code you find out that you can actually type `MessageBoard.removeMessage(messageID)` (where `messageID` is the id of the message you want to remove) into the console of the devtools to remove a message, even if your not logged in as admin. The id is also exposed at `http://localhost:3000/message/data` wich you find when you examining the code, again in `MessageBoard.js`.
 
 ### Using Components with Known Vulnerabilities
 
