@@ -10,6 +10,7 @@ Att skrapa en sida är egentligen ingen större teknisk skillnad mot om en männ
 ### Begränsningar i din lösning- vad är generellt och vad är inte generellt i din kod?
 #### Generellt
 * Det finns inget hårdkodat, förutom att de tre olika sidorna innehåller orden "cinema", "dinner" och "calendar". Det är den informationen som skrapan har hårdkodat för att veta vart den ska gå vidare.
+
 #### Ej generellt
 * För att få fram vilka tider som är lediga på restaurangen letar skrapan efter syskon till `input`. Skulle bokningen ligga nere kan inte skrapan hitta några lediga tider.
 * Skrapan förutsätter att alla sidorna finns på samma subdomän. Skrapan lagrar den inmatade url:en och lägger på de länkarna den skrapar fram på den url:en för att gå vidare till nästa sida.
