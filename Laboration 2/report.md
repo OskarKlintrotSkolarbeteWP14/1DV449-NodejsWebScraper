@@ -85,6 +85,12 @@ If the application has references to, for example, key in the database then the 
 
 The database key to each messages is written in the html of the client. The function for sending a remove request to the server is also sent to the client in a js-file. Examining the code you find out that you can actually type `MessageBoard.removeMessage(messageID)` (where `messageID` is the id of the message you want to remove) into the console of the devtools to remove a message, even if your not logged in as admin. The id is also exposed at `http://localhost:3000/message/data` wich you find when you examining the code, again in `MessageBoard.js`.
 
+### Using Components with Known Vulnerabilities
+
+#### Background
+
+The app is built on Node.js which is a very minimalistig platform that relies heavily on the developer in order to create a secure web application [6].
+
 ## Miscellaneous
 
 There is empty js-files under `config/enviroment/`.
@@ -101,3 +107,5 @@ There is empty js-files under `config/enviroment/`.
 [5] OWASP, "Session Management Cheat Sheet," 10 May 2015 [Online]. Available: https://www.owasp.org/index.php/Session_Management_Cheat_Sheet. Accessed 29 Nov 2015
 
 [6] Facebook, "Adding Markdown," in _Tutorial_, 2015. Available: http://facebook.github.io/react/docs/tutorial.html#adding-markdown. Accessed 29 Nov 2015
+
+[7] OWASP, "OWASP Node js Goat Project," 8 Mar 2014. Available: https://www.owasp.org/index.php/OWASP_Node_js_Goat_Project. Accessed 29 Nov 2015
