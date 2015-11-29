@@ -3,6 +3,34 @@ by Oskar Klintrot, oklib08
 
 ## Table of Content
 [Security Issus](#security-issus)
+- [Injection](#injection)
+  - [Background](#background)
+  - [Technical Description](#technical-description)
+- [Cross-site Scripting (XSS)](#cross-site-scripting-xss)
+  - [Background](#background-1)
+  - [Technical Description](#technical-description-1)
+- [Broken Authentication And Session Management](#broken-authentication-and-session-management)
+  - [Background](#background-2)
+  - [Technical Description](#technical-description-2)
+- [Cross-Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
+  - [Background](#background-3)
+  - [Technical Description](#technical-description-3)
+- [Missing Function Level Access Control](#missing-function-level-access-control)
+  - [Background](#background-4)
+  - [Technical Description](#technical-description-4)
+- [Insecure Direct Object References](#insecure-direct-object-references)
+  - [Background](#background-5)
+  - [Technical Description](#technical-description-5)
+- [Using Components with Known Vulnerabilities](#using-components-with-known-vulnerabilities)
+  - [Background](#background-6)
+  - [Technical Description](#technical-description-6)
+
+[Performance Issues](#performance-issues)
+
+[Miscellaneous](#miscellaneous)
+
+[References](#references)
+
 ________________
 
 ## Security Issus
