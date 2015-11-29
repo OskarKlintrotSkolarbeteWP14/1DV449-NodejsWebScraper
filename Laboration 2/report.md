@@ -129,7 +129,7 @@ The app is built on Node.js which is a very minimalistig platform that relies he
 
 ## Miscellaneous
 
-There is empty js-files under `config/enviroment/`.
+There is empty js-files under `config/enviroment/`. The logout-button is always visible. The message board is not automatically updated. The "remove message"-button is hidden per default and you have to activate it (after you have activated it in the code...).
 
 ## References
 [1] OWASP, "OWASP Top 10 - 2013," 12 Jun 2013 [Online]. Available: http://owasptop10.googlecode.com/files/OWASP%20Top%2010%20-%202013.pdf. Accessed 29 Nov 2015
