@@ -28,6 +28,13 @@ by Oskar Klintrot, oklib08
   - [Background](#background-7)
 
 [Performance Issues](#performance-issues)
+  - [404 Not Found](#404-not-found)
+  - [Content Delivery Network (CDN)](#content-delivery-network-cdn)
+  - [Caching](#caching)
+  - [CSS At The Top](#css-at-the-top)
+  - [JS At The bottom](#js-at-the-bottom)
+  - [Do Not Put JS or CSS Inline](#do-not-put-js-or-css-inline)
+  - [Build And Minify JS](#build-and-minify-js)
 
 [Miscellaneous](#miscellaneous)
 
