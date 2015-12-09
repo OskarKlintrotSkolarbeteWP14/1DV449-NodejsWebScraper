@@ -20,3 +20,7 @@ I robots.txt kan webbplats-ägaren ange om vilka begränsningar som gäller för
 ______
 ## Laboration 2
 Rapporten finns på engelska [här](https://github.com/OskarKlintrotSkolarbeteWP14/1DV449_oklib08/blob/master/Laboration%202/report.md).
+
+______
+## Laboration 3
+Koden till laboration 3 finns i branchen [gh-pages](https://github.com/OskarKlintrotSkolarbeteWP14/1DV449_oklib08/tree/gh-pages) och är publicerad [här](http://oskarklintrotskolarbetewp14.github.io/1DV449_oklib08).
