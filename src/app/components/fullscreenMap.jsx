@@ -20,8 +20,8 @@ const FullscreenMap = React.createClass({
 
   getInitialState(){
     return {
-      lat: 57.708,
-      lng: 11.974,
+      lat: 63,
+      lng: 15,
       zoom: 13
     };
   },
@@ -32,7 +32,7 @@ const FullscreenMap = React.createClass({
 
   componentDidMount(){
     const position = [this.state.lat, this.state.lng];
-    let map = L.map('app').setView(position, 13);
+    let map = L.map('app').setView(position, 5);
     L.tileLayer(MapBox.url, {
       attribution: MapBox.attribution,
       maxZoom: MapBox.maxZoom,
@@ -43,7 +43,7 @@ const FullscreenMap = React.createClass({
     function onLocationFound(e) {
       let radius = e.accuracy / 2;
       L.marker(e.latlng).addTo(map)
-          .bindPopup("Du är inom en " + parseInt(radius) + ' ' + radius + " meters radie från denna punkt").openPopup();
+          .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup();
       // L.circle(e.latlng, radius).addTo(map);
     }
     function onLocationError(e) {
