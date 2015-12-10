@@ -34,11 +34,24 @@ const FullscreenMap = React.createClass({
     const position = [this.state.lat, this.state.lng];
     let map = L.map('app').setView(position, 13);
     L.tileLayer(MapBox.url, {
-    attribution: MapBox.attribution,
-    maxZoom: MapBox.maxZoom,
-    id: MapBox.id,
-    accessToken: MapBox.accessToken
-}).addTo(map);
+      attribution: MapBox.attribution,
+      maxZoom: MapBox.maxZoom,
+      id: MapBox.id,
+      accessToken: MapBox.accessToken
+    }).addTo(map);
+    map.locate({setView: true, maxZoom: 16});
+    function onLocationFound(e) {
+      let radius = e.accuracy / 2;
+      L.marker(e.latlng).addTo(map)
+          .bindPopup("Du är inom en " + radius + " meters radie från denna punkt").openPopup();
+      // L.circle(e.latlng, radius).addTo(map);
+    }
+    function onLocationError(e) {
+        alert(e.message);
+    }
+
+    map.on('locationfound', onLocationFound);
+    map.on('locationerror', onLocationError);
   },
 
   render() {
