@@ -1,5 +1,6 @@
 import React from 'react';
 import FullscreenMap from './fullscreenMap';
+import ProgressBar from './progressBar';
 import SrApi from '../scripts/srApi';
 // import MapComponent from './mapComponent';
 
@@ -33,15 +34,10 @@ const Main = React.createClass({
       return (
           <FullscreenMap data={this.state.data} />
       );
-      // return <CategoriesSetup data={this.state.data} />;
     }
 
     return (
-      <div className="progress">
-        <div className="progress-bar progress-bar-striped active" role="progressbar" ariaValuenow="45" ariaValuemin="0" ariaValuemax="100" style={{width: "100%"}}>
-          <span className="sr-only">Laddar sidan...</span>
-        </div>
-      </div>
+      <ProgressBar />
     );
   }
 

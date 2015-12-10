@@ -1,13 +1,3 @@
-function onLocationFound(e) {
-  let radius = e.accuracy / 2;
-  L.marker(e.latlng).addTo(map)
-      .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup();
-  // L.circle(e.latlng, radius).addTo(map);
-}
-function onLocationError(e) {
-    alert(e.message);
-}
-
 export let LeafletSettings = {
   url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
   accessToken: 'pk.eyJ1IjoiY3VyaXVtIiwiYSI6ImNpaHp5dGEwbjA0cGR1c2tvOTY4ZG15YnUifQ.Im-J6IEzjtK1-odgOSuNMw',
@@ -20,9 +10,20 @@ export let LeafletSettings = {
 };
 
 const LeafletMap = {
-  initialise(lat, lng, geolocation){
-    lat = lat || LeafletSettings.lat;
-    lng = lng || LeafletSettings.lng;
+  Initialise(settings){
+    let lat = settings.lat || LeafletSettings.lat;
+    let lng = settings.lng || LeafletSettings.lng;
+    let geolocation = settings.geolocation || false;
+
+    function onLocationFound(e) {
+      let radius = e.accuracy / 2;
+      L.marker(e.latlng).addTo(map)
+          .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup();
+      // L.circle(e.latlng, radius).addTo(map);
+    }
+    function onLocationError(e) {
+        throw new Error("geolocationError"); //TODO: Does this crash the app?
+    }
 
     console.log(LeafletSettings.lat);
 

@@ -1,4 +1,4 @@
-// Example from http://tc39.github.io/ecmascript-asyncawait/
+// Example from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#Example_using_new_XMLHttpRequest()
 
 const SrApi = {
   // A-> $http function is implemented in order to follow the standard Adapter pattern
