@@ -2,7 +2,6 @@ import React from 'react';
 import FullscreenMap from './fullscreenMap';
 import ProgressBar from './progressBar';
 import SrApi from '../scripts/srApi';
-// import MapComponent from './mapComponent';
 
 import Messages from '../scripts/messages';
 
@@ -12,7 +11,7 @@ const Main = React.createClass({
   },
 
   componentDidMount: function() {
-    let development = true;
+    let development = false;
 
     if(development){
       // Cached response for development

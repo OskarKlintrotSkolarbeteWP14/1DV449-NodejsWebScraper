@@ -14,15 +14,29 @@ const FullscreenMap = React.createClass({
     };
   },
 
-  componentDidMount(){
-    console.log(this.props.data);
-
+  setLeafletSetting(){
     for (let property in this.state) {
       if(LeafletSettings.hasOwnProperty(property))
         LeafletSettings[property] = this.state[property];
     }
+  },
+
+  addLeafletMarkers(){
+    for (let message in this.props.data.messages) {
+      let temp = {};
+      for (let property in this.props.data.messages[message]) {
+        temp[property] = this.props.data.messages[message][property];
+      }
+      LeafletMap.AddMarker(temp);
+    }
+  },
+
+  componentDidMount(){
+    this.setLeafletSetting();
 
     LeafletMap.Initialise({geolocation: true});
+
+    this.addLeafletMarkers();
   },
 
   render() {
