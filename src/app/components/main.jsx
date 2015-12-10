@@ -1,5 +1,6 @@
 import React from 'react';
 import FullscreenMap from './fullscreenMap';
+import SrApi from '../scripts/srApi';
 // import MapComponent from './mapComponent';
 
 import Messages from '../scripts/messages';
@@ -9,7 +10,7 @@ const Main = React.createClass({
     return { data: null };
   },
 
-  componentDidMount() {
+  componentDidMount: function() {
     let development = true;
 
     if(development){
@@ -20,22 +21,17 @@ const Main = React.createClass({
     }
     else {
       // We don't want to poll api.sr.se while devoloping this application
-      $.get('http://api.sr.se/api/v2/traffic/messages?format=json&pagination=false')
-      .done((data) => {
-        this.setState({data: data});
-      })
-      .fail(() => {
-        console.log("Error fetching sr api");
-      });
-      // TODO: Checkout http://tc39.github.io/ecmascript-asyncawait/
+      SrApi.$http()
+      .get()
+      .then((data) => {this.setState({data: JSON.parse(data)});})
+      .catch((data) => {console.log(data);}); // TODO: Implement modal
     }
   },
 
   render() {
     if (this.state.data) {
-      console.log(this.state.data);
       return (
-          <FullscreenMap />
+          <FullscreenMap data={this.state.data} />
       );
       // return <CategoriesSetup data={this.state.data} />;
     }

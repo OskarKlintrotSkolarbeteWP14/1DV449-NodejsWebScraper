@@ -1,5 +1,5 @@
 import React from 'react';
-import MyMap from './myMap';
+import LeafletMap, {LeafletSettings} from '../scripts/leafletMap';
 
 const styles = {
 
@@ -15,7 +15,7 @@ const MapBox = {
 
 const FullscreenMap = React.createClass({
   propTypes: {
-    // add: React.PropTypes.number
+    data: React.PropTypes.object.isRequired
   },
 
   getInitialState(){
@@ -26,39 +26,25 @@ const FullscreenMap = React.createClass({
     };
   },
 
-  getDefaultProps(){
-
-  },
+  // getDefaultProps(){
+  //   return {
+  //     data: null
+  //   };
+  // },
 
   componentDidMount(){
-    const position = [this.state.lat, this.state.lng];
-    let map = L.map('app').setView(position, 4);
-    L.tileLayer(MapBox.url, {
-      attribution: MapBox.attribution,
-      maxZoom: MapBox.maxZoom,
-      id: MapBox.id,
-      accessToken: MapBox.accessToken
-    }).addTo(map);
-    map.locate({setView: true, maxZoom: 16});
-    function onLocationFound(e) {
-      let radius = e.accuracy / 2;
-      L.marker(e.latlng).addTo(map)
-          .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup();
-      // L.circle(e.latlng, radius).addTo(map);
-    }
-    function onLocationError(e) {
-        alert(e.message);
+    console.log(this.props.data);
+
+    for (let property in this.state) {
+      if(LeafletSettings.hasOwnProperty(property))
+        LeafletSettings[property] = this.state[property];
     }
 
-    map.on('locationfound', onLocationFound);
-    map.on('locationerror', onLocationError);
+    LeafletMap.initialise();
   },
 
   render() {
-    return (
-      <div>
-      </div>
-    );
+    return null;
   }
 });
 
