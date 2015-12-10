@@ -157,8 +157,15 @@ const LeafletMap = {
 
   AddGeoJSONMarkers(data){
     function onEachFeature(feature, layer) {
-			let popupContent = (
-        '<p><strong>' + feature.properties.title + '</strong>: <em>' + feature.properties.exactlocation + '</em></p><p>' + feature.properties.description + '</p><p><em>' + Categories[+feature.properties.category] + ': ' + feature.properties.subcategory + '</em><br />' + feature.properties.createddate.getFullYear() + '-' + TwoDigits(parseInt(feature.properties.createddate.getMonth()) + 1) + '-' + TwoDigits(feature.properties.createddate.getDate()) + ' ' + TwoDigits(feature.properties.createddate.getHours()) + ':' + TwoDigits(feature.properties.createddate.getMinutes()) + '</p>'
+      let title = feature.properties.tile ? '' : '<p><strong>' + feature.properties.title + '' ;
+      let exactlocation = feature.properties.exactlocation ? ':</strong> <em>' + feature.properties.exactlocation + '</em></p><p>' : '</strong></p><p>';
+      let description = feature.properties.description ? feature.properties.description + '</p>' : '';
+      let category = feature.properties.category.toString() ? '<p><em>' + Categories[+feature.properties.category] : '';
+      let subcategory = feature.properties.subcategory ? ': ' + feature.properties.subcategory + '</em><br />' : '</em><br />';
+      let createddate = feature.properties.createddate.toString() ? feature.properties.createddate.getFullYear() + '-' + TwoDigits(parseInt(feature.properties.createddate.getMonth()) + 1) + '-' + TwoDigits(feature.properties.createddate.getDate()) + ' ' + TwoDigits(feature.properties.createddate.getHours()) + ':' + TwoDigits(feature.properties.createddate.getMinutes()) + '</p>' : '</p>';
+
+      let popupContent = (
+        title + exactlocation + description + category + subcategory + createddate
       );
 
 			if (feature.properties && feature.properties.popupContent) {
@@ -177,14 +184,7 @@ const LeafletMap = {
 			onEachFeature: onEachFeature,
 
 			pointToLayer: function (feature, latlng) {
-				return L.circleMarker(latlng, {
-					radius: 8,
-					fillColor: "#ff7800",
-					color: "#000",
-					weight: 1,
-					opacity: 1,
-					fillOpacity: 0.8
-				});
+				return L.marker(latlng);
 			}
 		}).addTo(this.Map);
     console.log(data);
@@ -192,26 +192,25 @@ const LeafletMap = {
 
   AddPanel(){
     let overLayers = [
-	{
-		name: "Bar",
-		layer: L.geoJson(null, {pointToLayer: layerGroups.road })
-	},
-	{
-		name: "Drinking Water",
-		layer: L.geoJson(null, {pointToLayer: null })
-	},
-	{
-		name: "Fuel",
-		layer: L.geoJson(null, {pointToLayer: null })
-	},
-	{
-		name: "Parking",
-		layer: L.geoJson(null, {pointToLayer: null })
-	}
-];
+    	{
+    		name: "Bar",
+    		layer: L.geoJson(null, {pointToLayer: layerGroups.road })
+    	},
+    	{
+    		name: "Drinking Water",
+    		layer: L.geoJson(null, {pointToLayer: null })
+    	},
+    	{
+    		name: "Fuel",
+    		layer: L.geoJson(null, {pointToLayer: null })
+    	},
+    	{
+    		name: "Parking",
+    		layer: L.geoJson(null, {pointToLayer: null })
+    	}
+    ];
 
-let panelLayers = new L.Control.PanelLayers(null, overLayers, {collapsed: false});
-
+    let panelLayers = new L.Control.PanelLayers(null, overLayers, {collapsed: false});
   }
 };
 
