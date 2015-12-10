@@ -32,7 +32,7 @@ const FullscreenMap = React.createClass({
 
   componentDidMount(){
     const position = [this.state.lat, this.state.lng];
-    let map = L.map('app').setView(position, 5);
+    let map = L.map('app').setView(position, 4);
     L.tileLayer(MapBox.url, {
       attribution: MapBox.attribution,
       maxZoom: MapBox.maxZoom,
