@@ -43,7 +43,7 @@ const FullscreenMap = React.createClass({
     function onLocationFound(e) {
       let radius = e.accuracy / 2;
       L.marker(e.latlng).addTo(map)
-          .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup();
+          .bindPopup("Du är inom en " + parseInt(radius) + ' ' + radius + " meters radie från denna punkt").openPopup();
       // L.circle(e.latlng, radius).addTo(map);
     }
     function onLocationError(e) {
