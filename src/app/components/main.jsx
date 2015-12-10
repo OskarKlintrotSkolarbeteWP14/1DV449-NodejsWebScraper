@@ -11,7 +11,7 @@ const Main = React.createClass({
   },
 
   componentDidMount: function() {
-    let development = false;
+    let development = true;
 
     if(development){
       // Cached response for development

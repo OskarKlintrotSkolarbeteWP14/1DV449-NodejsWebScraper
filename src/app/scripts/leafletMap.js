@@ -5,10 +5,17 @@ let TwoDigits = function(number){
 };
 
 const Categories = {
-  0: 'Vägtrafik',
-  1: 'Kollektivtrafik',
-  2: 'Planerad störning',
-  3: 'Övrigt'
+  '0': 'Vägtrafik',
+  '1': 'Kollektivtrafik',
+  '2': 'Planerad störning',
+  '3': 'Övrigt'
+};
+
+let layerGroups = {
+  road: new L.LayerGroup(),
+  shared: new L.LayerGroup(),
+  planed: new L.LayerGroup(),
+  misc: new L.LayerGroup()
 };
 
 export let LeafletSettings = {
@@ -41,7 +48,18 @@ const LeafletMap = {
     }
 
     const position = [lat, lng];
-    this.Map = L.map('app').setView(position, 4);
+    this.Map = L.map('app', {
+      layers: [layerGroups.road, layerGroups.shared, layerGroups.planed, layerGroups.misc]
+    }).setView(position, 4);
+
+    let overlays = {
+      [Categories['0']]: layerGroups.road,
+      [Categories['1']]: layerGroups.shared,
+      [Categories['2']]: layerGroups.planed,
+      [Categories['3']]: layerGroups.misc
+    };
+
+    L.control.layers(null, overlays).addTo(this.Map);
 
     L.tileLayer(LeafletSettings.url, {
       attribution: LeafletSettings.attribution,
@@ -77,11 +95,26 @@ const LeafletMap = {
       .setLatLng(position)
       .setContent(
         '<p><strong>' + title + '</strong>: <em>' + exactlocation + '</em></p><p>' + description + '</p><p><em>' + Categories[+category] + ': ' + subcategory + '</em><br />' + createddate.getFullYear() + '-' + TwoDigits(parseInt(createddate.getMonth()) + 1) + '-' + TwoDigits(createddate.getDate()) + ' ' + TwoDigits(createddate.getHours()) + ':' + TwoDigits(createddate.getMinutes()) + '</p>'
-      )
-      .openOn(this.Map);
+      );
 
-    marker.bindPopup(popup)
-      .addTo(this.Map);
+    // marker.bindPopup(popup)
+    //   .addTo(this.Map);
+
+    switch (message.category) {
+      case 0:
+        marker.bindPopup(popup).addTo(layerGroups.road);
+        break;
+      case 1:
+        marker.bindPopup(popup).addTo(layerGroups.shared);
+        break;
+      case 2:
+        marker.bindPopup(popup).addTo(layerGroups.planed);
+        break;
+      case 3:
+        marker.bindPopup(popup).addTo(layerGroups.misc);
+        break;
+      default:
+    }
   }
 };
 
