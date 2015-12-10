@@ -18,6 +18,28 @@ let layerGroups = {
   misc: new L.LayerGroup()
 };
 
+const CreateGeoJSONObject = function(message){
+  let latitude = message.latitude || null;
+  let longitude = message.longitude || null;
+  let position = [latitude, longitude];
+  let marker = L.marker(position);
+  let geoJSON = marker.toGeoJSON();
+
+  geoJSON.properties.category = parseInt(message.category.toString() || null);
+  geoJSON.properties.createddate = message.createddate ? new Date(JSON.parse(parseInt(message.createddate.slice(6, 19)) + parseInt(message.createddate.slice(20, 22))*3600000)) : null;
+  geoJSON.properties.description = message.description || null;
+  geoJSON.properties.exactlocation = message.exactlocation || null;
+  geoJSON.properties.id = message.id || null;
+  geoJSON.properties.latitude = latitude;
+  geoJSON.properties.longitude = longitude;
+  geoJSON.properties.position = position;
+  geoJSON.properties.priority = message.priority || null;
+  geoJSON.properties.subcategory = message.subcategory || null;
+  geoJSON.properties.title = message.title || null;
+
+  return geoJSON;
+};
+
 export let LeafletSettings = {
   url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
   accessToken: 'pk.eyJ1IjoiY3VyaXVtIiwiYSI6ImNpaHp5dGEwbjA0cGR1c2tvOTY4ZG15YnUifQ.Im-J6IEzjtK1-odgOSuNMw',
@@ -76,6 +98,18 @@ const LeafletMap = {
     }
   },
 
+  GetGeoJSON(messages){
+    let geoJSON = [];
+    for (let message in messages) {
+      let temp = {};
+      for (let property in messages[message]) {
+        temp[property] = messages[message][property];
+      }
+      geoJSON.push(CreateGeoJSONObject(temp));
+    }
+    return geoJSON;
+  },
+
   AddMarker(message){
     let category = message.category || null;
     let createddate = message.createddate ? new Date(JSON.parse(parseInt(message.createddate.slice(6, 19)) + parseInt(message.createddate.slice(20, 22))*3600000)) : null;
@@ -115,6 +149,69 @@ const LeafletMap = {
         break;
       default:
     }
+
+    let temp = marker.toGeoJSON();
+    temp.properties.id = 1;
+    return temp;
+  },
+
+  AddGeoJSONMarkers(data){
+    function onEachFeature(feature, layer) {
+			let popupContent = (
+        '<p><strong>' + feature.properties.title + '</strong>: <em>' + feature.properties.exactlocation + '</em></p><p>' + feature.properties.description + '</p><p><em>' + Categories[+feature.properties.category] + ': ' + feature.properties.subcategory + '</em><br />' + feature.properties.createddate.getFullYear() + '-' + TwoDigits(parseInt(feature.properties.createddate.getMonth()) + 1) + '-' + TwoDigits(feature.properties.createddate.getDate()) + ' ' + TwoDigits(feature.properties.createddate.getHours()) + ':' + TwoDigits(feature.properties.createddate.getMinutes()) + '</p>'
+      );
+
+			if (feature.properties && feature.properties.popupContent) {
+				popupContent += feature.properties.popupContent;
+			}
+
+			layer.bindPopup(popupContent);
+		}
+
+    L.geoJson(data, {
+
+			style: function (feature) {
+				return feature.properties && feature.properties.style;
+			},
+
+			onEachFeature: onEachFeature,
+
+			pointToLayer: function (feature, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 8,
+					fillColor: "#ff7800",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		}).addTo(this.Map);
+    console.log(data);
+  },
+
+  AddPanel(){
+    let overLayers = [
+	{
+		name: "Bar",
+		layer: L.geoJson(null, {pointToLayer: layerGroups.road })
+	},
+	{
+		name: "Drinking Water",
+		layer: L.geoJson(null, {pointToLayer: null })
+	},
+	{
+		name: "Fuel",
+		layer: L.geoJson(null, {pointToLayer: null })
+	},
+	{
+		name: "Parking",
+		layer: L.geoJson(null, {pointToLayer: null })
+	}
+];
+
+let panelLayers = new L.Control.PanelLayers(null, overLayers, {collapsed: false});
+
   }
 };
 

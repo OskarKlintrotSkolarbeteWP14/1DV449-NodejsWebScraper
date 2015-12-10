@@ -21,14 +21,8 @@ const FullscreenMap = React.createClass({
     }
   },
 
-  addLeafletMarkers(){
-    for (let message in this.props.data.messages) {
-      let temp = {};
-      for (let property in this.props.data.messages[message]) {
-        temp[property] = this.props.data.messages[message][property];
-      }
-      LeafletMap.AddMarker(temp);
-    }
+  getGeoJSON(){
+    return LeafletMap.GetGeoJSON(this.props.data.messages);
   },
 
   componentDidMount(){
@@ -36,7 +30,11 @@ const FullscreenMap = React.createClass({
 
     LeafletMap.Initialise({geolocation: true});
 
-    this.addLeafletMarkers();
+    let geoJSON = this.getGeoJSON();
+
+    LeafletMap.AddGeoJSONMarkers(geoJSON);
+
+    LeafletMap.AddPanel();
   },
 
   render() {
