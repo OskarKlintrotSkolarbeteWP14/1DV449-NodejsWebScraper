@@ -1,5 +1,6 @@
 import React from 'react';
 import LeafletMap, {LeafletSettings} from '../scripts/leafletMap';
+import Markers from '../scripts/markers';
 
 const FullscreenMap = React.createClass({
   propTypes: {
@@ -27,14 +28,10 @@ const FullscreenMap = React.createClass({
 
   componentDidMount(){
     this.setLeafletSetting();
-
     LeafletMap.Initialise({geolocation: true});
-
     let geoJSON = this.getGeoJSON();
-
-    LeafletMap.AddGeoJSONMarkers(geoJSON);
-
-    LeafletMap.AddPanel();
+    let markerMap = LeafletMap.AddGeoJSONMarkers(geoJSON);
+    Markers.Map = markerMap;
   },
 
   render() {

@@ -1,7 +1,7 @@
 // Example from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#Example_using_new_XMLHttpRequest()
 
 const SrApi = {
-  // A-> $http function is implemented in order to follow the standard Adapter pattern
+  // $http function is implemented in order to follow the standard Adapter pattern
   $http(url){
     url = url || 'http://api.sr.se/api/v2/traffic/messages?format=json&pagination=false';
 

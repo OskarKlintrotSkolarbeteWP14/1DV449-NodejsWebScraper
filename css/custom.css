@@ -1,9 +1,23 @@
 body {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
-html, body, #app {
-    height: 100%;
+/*html, body, #app {
+  height: 100%;
+}*/
+
+html, body {
+  height: 100%;
+}
+
+#app {
+  height: 60%;
+}
+
+#list {
+  position: relative;
+  float:left;
+  height: 40%;
 }
 
 /*.leaflet-container {
