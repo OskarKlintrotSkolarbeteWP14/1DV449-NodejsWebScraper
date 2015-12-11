@@ -20,7 +20,7 @@ html, body, #container {
 
 #list {
   position:absolute;
-  bottom: 2px;
+  bottom: 20px;
   height: 25%;
   margin: 20px;
   padding: 10px;

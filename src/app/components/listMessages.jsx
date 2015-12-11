@@ -7,18 +7,21 @@ const styles = {
   markers: {
     // height: '150px',
     // position: 'relative',
-    overflow: 'auto',
+    // paddingBottom: '50px',
+    // overflow: 'auto',
   },
   listcontainer: {
-    
+
   }
 };
 
 const ListMessages = React.createClass({
   componentDidMount() {
     const addToList = (message) => {
+      let exactlocation = message.feature.properties.exactlocation ? ', ' + message.feature.properties.exactlocation : '';
+      let description = message.feature.properties.description ? message.feature.properties.description : '';
       $('div#markers').append(
-        '<a href="#" class="list-link" data-message-id=\"'+message.feature.id+'\" title="' + message.feature.properties.title + '"><div class="info-list-item">' + '<div class="info-list-txt">' + '<div class="title">' + Categories[message.feature.properties.category] + ', ' + message.feature.properties.subcategory + ': ' + message.feature.properties.title + ', ' + message.feature.properties.exactlocation + '</div>' + '<div>' + message.feature.properties.description + '</div>' + '<div>' + FormatDate(message.feature.properties.createddate) + '</div>' + '</div>' + '</div>' + '</a>' + '<br />'
+        '<a href="#" class="list-link" data-message-id=\"'+message.feature.id+'\" title="' + message.feature.properties.title + '"><div class="info-list-item">' + '<div class="info-list-txt">' + '<div class="title"><strong>' + Categories[message.feature.properties.category] + ', ' + message.feature.properties.subcategory + ': </strong>' + message.feature.properties.title + exactlocation + '</div>' + '<div>' + description + '</div>' + '<div>' + FormatDate(message.feature.properties.createddate) + '</div>' + '</div>' + '</div>' + '</a>' + '<br />'
       );
     };
 
