@@ -5,9 +5,12 @@ import Markers from '../scripts/markers';
 
 const styles = {
   markers: {
-    height: '150px',
-    position: 'relative',
+    // height: '150px',
+    // position: 'relative',
     overflow: 'auto',
+  },
+  listcontainer: {
+    
   }
 };
 
@@ -41,7 +44,9 @@ const ListMessages = React.createClass({
     return (
       <div>
         <h4>Händelser</h4>
-        <div id="markers" style={styles.markers}></div>
+        <div id="listcontainer" style={styles.listcontainer}>
+          <div id="markers" style={styles.markers}></div>
+        </div>
       </div>
     );
   }
