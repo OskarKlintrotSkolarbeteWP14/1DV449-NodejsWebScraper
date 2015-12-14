@@ -4,7 +4,8 @@ import { StorageAvailable } from './helper'
 // Example from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#Example_using_new_XMLHttpRequest()
 
 const CachingTime = 1 // In minutes
-const Development = false // Set to true to avoid polling SR API
+const Development = true // Set to true to avoid polling SR API
+const Delay = 2000 // Simulated response time
 
 const SrApi = {
   // $http function is implemented in order to follow the standard Adapter pattern
@@ -23,7 +24,7 @@ const SrApi = {
             // Cached response for development
             setTimeout(() => {
               resolve(JSON.stringify(Messages))
-            }, 500)
+            }, Delay)
           } else if (StorageAvailable('localStorage') &&
           localStorage.messages &&
           localStorage.timestamp &&

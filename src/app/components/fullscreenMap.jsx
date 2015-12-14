@@ -1,7 +1,10 @@
 import React from 'react'
+import ProgressBar from './progressBar'
+import FlashLink from './flashLink'
 import LeafletMap, {LeafletSettings} from '../scripts/leafletMap'
 import Markers from '../scripts/markers'
-import ListMessages from './listMessages'
+import MessageBox from './messageBox'
+import SrApi from '../scripts/srApi'
 
 class FullscreenMap extends React.Component{
   constructor(props) {
@@ -10,7 +13,8 @@ class FullscreenMap extends React.Component{
       markers: null,
       lat: 63,
       lng: 15,
-      zoom: 13
+      zoom: 13,
+      data: null
     }
   }
 
@@ -22,29 +26,48 @@ class FullscreenMap extends React.Component{
   }
 
   getGeoJSON(){
-    return LeafletMap.GetGeoJSON(this.props.data.messages)
+    return LeafletMap.GetGeoJSON(this.state.data.messages)
   }
 
   componentWillMount(){
     this.setLeafletSetting()
-    LeafletMap.Initialise({geolocation: true})
-    let geoJSON = this.getGeoJSON()
-    let markerMap = LeafletMap.AddGeoJSONMarkers(geoJSON)
-    Markers.Map = markerMap
-    this.setState({
-      markers: Markers.Sorted()
+    try {
+      LeafletMap.Initialise({geolocation: true})
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  componentDidMount() {
+    SrApi.$http()
+    .get()
+    .then((data) => {
+      let geoJSON = LeafletMap.GetGeoJSON(JSON.parse(data).messages)
+      let markerMap = LeafletMap.AddGeoJSONMarkers(geoJSON)
+      Markers.Map = markerMap
+      this.setState({
+        markers: Markers.Sorted()
+      })
     })
+    .catch((data) => {console.log(data)}) // TODO: Implement modal
   }
 
   render() {
-    return(
-      <ListMessages data={this.state.markers} />
-    )
+    if(this.state.markers) {
+      return(
+        <MessageBox>
+          <FlashLink data={this.state.markers} />
+        </MessageBox>
+      )
+    }
+    else {
+      return (
+        <MessageBox>
+          <ProgressBar />
+        </MessageBox>
+      )
+    }
   }
-}
-
-FullscreenMap.propTypes = {
-  data: React.PropTypes.object.isRequired
 }
 
 export default FullscreenMap

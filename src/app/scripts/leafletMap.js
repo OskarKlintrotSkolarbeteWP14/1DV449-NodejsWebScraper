@@ -55,15 +55,13 @@ const LeafletMap = {
       let radius = e.accuracy / 2
       L.marker(e.latlng).addTo(LeafletMap.Map) // Can't use "this" here
           .bindPopup("Du är inom en " + parseInt(radius) + " meters radie från denna punkt").openPopup()
-      // L.circle(e.latlng, radius).addTo(map)
     }
     function onLocationError(e) {
-        throw new Error("geolocationError") //TODO: Does this crash the app?
+        throw new Error("GeolocationError")
     }
 
     const position = [lat, lng]
 
-    $('#map').css("height", "100%") // To make the map height 100 %
     this.Map = L.map('map', {
       layers: [layerGroups.road, layerGroups.shared, layerGroups.planed, layerGroups.misc]
     }).setView(position, 4)
