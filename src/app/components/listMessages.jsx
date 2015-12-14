@@ -1,8 +1,8 @@
-import React, { PropTypes } from 'react';
-import FlashLink from './flashLink';
+import React, { PropTypes } from 'react'
+import FlashLink from './flashLink'
 
 const ListMessages = props => {
-  let {data} = props;
+  let {data} = props
 
   return (
     <div>
@@ -13,11 +13,11 @@ const ListMessages = props => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 ListMessages.propTypes = {
   data: React.PropTypes.array.isRequired
-};
+}
 
-export default ListMessages;
+export default ListMessages

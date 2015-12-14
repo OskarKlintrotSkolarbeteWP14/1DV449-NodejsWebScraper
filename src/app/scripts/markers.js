@@ -8,20 +8,20 @@ function Markers() {
   // Empty
 }
 
-Markers.Map = {};
+Markers.Map = {}
 
 Markers.Sorted = () => {
-  let sorted = [];
+  let sorted = []
 
   for (const item in Markers.Map) {
-    sorted.push(Markers.Map[item]);
+    sorted.push(Markers.Map[item])
   }
 
   sorted.sort((a, b) => {
-    return b.feature.properties.createddate - a.feature.properties.createddate;
-  });
+    return b.feature.properties.createddate - a.feature.properties.createddate
+  })
 
-  return sorted;
-};
+  return sorted
+}
 
-export default Markers;
+export default Markers

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const ProgressBar = () => {
   return (
@@ -7,7 +7,7 @@ const ProgressBar = () => {
         <span className="sr-only">Laddar sidan...</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProgressBar;
+export default ProgressBar
