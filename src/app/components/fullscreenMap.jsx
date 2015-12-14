@@ -1,6 +1,7 @@
 import React from 'react';
 import LeafletMap, {LeafletSettings} from '../scripts/leafletMap';
 import Markers from '../scripts/markers';
+import ListMessages from './listMessages';
 
 const FullscreenMap = React.createClass({
   propTypes: {
@@ -9,6 +10,7 @@ const FullscreenMap = React.createClass({
 
   getInitialState(){
     return {
+      markers: null,
       lat: 63,
       lng: 15,
       zoom: 13
@@ -26,16 +28,21 @@ const FullscreenMap = React.createClass({
     return LeafletMap.GetGeoJSON(this.props.data.messages);
   },
 
-  componentDidMount(){
+  componentWillMount(){
     this.setLeafletSetting();
     LeafletMap.Initialise({geolocation: true});
     let geoJSON = this.getGeoJSON();
     let markerMap = LeafletMap.AddGeoJSONMarkers(geoJSON);
     Markers.Map = markerMap;
+    this.setState({
+      markers: Markers.Sorted()
+    });
   },
 
   render() {
-    return null;
+    return(
+      <ListMessages data={this.state.markers} />
+    );
   }
 });
 

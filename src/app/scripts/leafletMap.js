@@ -62,7 +62,9 @@ const LeafletMap = {
     }
 
     const position = [lat, lng]
-    this.Map = L.map('app', {
+
+    $('#map').css("height", "100%"); // To make the map height 100 %
+    this.Map = L.map('map', {
       layers: [layerGroups.road, layerGroups.shared, layerGroups.planed, layerGroups.misc]
     }).setView(position, 4)
 

@@ -2,7 +2,6 @@ import React from 'react';
 import FullscreenMap from './fullscreenMap';
 import ProgressBar from './progressBar';
 import SrApi from '../scripts/srApi';
-import ListMessages from './listMessages';
 
 import Messages from '../scripts/messages';
 
@@ -12,13 +11,13 @@ const Main = React.createClass({
   },
 
   componentDidMount: function() {
-    let development = false;
+    let development = true;
 
     if(development){
       // Cached response for development
       setTimeout(() => {
         this.setState({data: Messages});
-      }, 500);
+      }, 2000);
     }
     else {
       // We don't want to poll api.sr.se while devoloping this application
@@ -32,16 +31,15 @@ const Main = React.createClass({
   render() {
     if (this.state.data) {
       return (
-        <div>
+        <div id="list">
           <FullscreenMap data={this.state.data} />
-          <ListMessages />
         </div>
       );
+    } else {
+      return (
+        <ProgressBar />
+      );
     }
-
-    return (
-      <ProgressBar />
-    );
   }
 
 });
