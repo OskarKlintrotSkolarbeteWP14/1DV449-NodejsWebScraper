@@ -4,10 +4,10 @@ import { FormatDate } from '../scripts/helper';
 import { Categories } from '../scripts/viewModel';
 import Markers from '../scripts/markers';
 
-const FlashLink = React.createClass({
-  propTypes: {
-    data: React.PropTypes.array.isRequired
-  },
+class FlashLink extends React.Component{
+  constructor(props) {
+    super(props);
+  }
 
   renderList(){
     let list = [];
@@ -37,7 +37,7 @@ const FlashLink = React.createClass({
       );
     });
     return list;
-  },
+  }
 
   render() {
     let list = this.renderList();
@@ -47,6 +47,10 @@ const FlashLink = React.createClass({
       </div>
     );
   }
-});
+}
+
+FlashLink.propTypes = {
+  data: React.PropTypes.array.isRequired
+};
 
 export default FlashLink;

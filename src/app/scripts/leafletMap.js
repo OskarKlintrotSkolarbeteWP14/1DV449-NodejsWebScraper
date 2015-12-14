@@ -8,7 +8,7 @@ let layerGroups = {
   misc: new L.LayerGroup()
 }
 
-const CreateGeoJSONObject = function(message){
+const CreateGeoJSONObject = (message) => {
   let latitude = message.latitude || null
   let longitude = message.longitude || null
   let position = [latitude, longitude]
