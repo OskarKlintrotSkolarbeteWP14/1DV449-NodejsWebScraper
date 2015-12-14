@@ -36,11 +36,11 @@ a.list-link {
   overflow: auto;
 }
 
-#list::-webkit-scrollbar, #list::-webkit-scrollbar-track, #list::-webkit-scrollbar-thumb {
+/*#list::-webkit-scrollbar, #list::-webkit-scrollbar-track, #list::-webkit-scrollbar-thumb {
   border-radius: 10px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-}
+}*/
 
 /*.leaflet-container {
   height: 400px;
