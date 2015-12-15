@@ -5,7 +5,7 @@ export const TwoDigits = (number) => {
 }
 
 export const JsonDateToDate = (date) => {
-  return new Date(JSON.parse(parseInt(date.slice(6, 19)) + parseInt(date.slice(20, 22))*3600000))
+  return new Date(JSON.parse(parseInt(date.slice(6, 19)) /* + parseInt(date.slice(20, 22))*3600000*/))
 }
 
 export const FormatDate = (date) => {
