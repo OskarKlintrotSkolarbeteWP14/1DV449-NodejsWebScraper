@@ -4,7 +4,7 @@ import { StorageAvailable } from './helper'
 // Example from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#Example_using_new_XMLHttpRequest()
 
 const CachingTime = 1 // In minutes
-const Development = true // Set to true to avoid polling SR API
+const Development = false // Set to true to avoid polling SR API
 const Delay = 2000 // Simulated response time
 
 const SrApi = {
